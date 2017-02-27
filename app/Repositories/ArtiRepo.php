@@ -103,7 +103,7 @@ class ArtiRepo
             'title' => $article['title'],
             'chinese_title' => $article['chinese_title'],
             'intro' => $article['intro'],
-            'sort_id' => $article['sort_id'],
+            'sort_id' => $article['sort_id'],// 之后提示错误信息
             'author' => $article['author'],
             'publish_status' => $article['publish_status'],
             'cover_ext' => $article['cover_ext'],
