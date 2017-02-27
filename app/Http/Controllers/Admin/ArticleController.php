@@ -63,7 +63,11 @@ class ArticleController extends AdminController
         $article['sort_id'] = $request->input('sort_id', 0);
 
         $file = Input::file('cover');
-        if (null !== $file) $article['cover_ext'] = $file->getClientOriginalExtension();
+        if (null !== $file) {
+            $article['cover_ext'] = $file->getClientOriginalExtension();
+        } else {
+            $article['cover_ext'] = '';
+        }
         if ($novelId = $artiRepo->setArticle($article)) {
             // 处理封面/如果没有上传则暂时不处理
             if ('' != $article['cover']) {
