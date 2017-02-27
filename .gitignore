@@ -1,0 +1,9 @@
+/node_modules
+/bootstrap/cache
+/storage
+/public/storage
+/.idea
+Homestead.json
+Homestead.yaml
+.env
+/font_code
