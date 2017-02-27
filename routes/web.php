@@ -3,7 +3,7 @@
 Route::get('/', 'HomeController@index');
 Route::get('/novel/{id}', 'NovelController@index');
 Route::get('/test', function () {
-    return 'test';
+    return phpinfo();
 });
 
 Route::get('/init_admin', 'TestController@initAdmin');
