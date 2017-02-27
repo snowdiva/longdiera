@@ -2,6 +2,9 @@
 
 Route::get('/', 'HomeController@index');
 Route::get('/novel/{id}', 'NovelController@index');
+Route::get('/test', function () {
+    return 'test';
+});
 
 Route::get('/init_admin', 'TestController@initAdmin');
 
