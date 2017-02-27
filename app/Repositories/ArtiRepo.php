@@ -136,9 +136,10 @@ class ArtiRepo
             'sort_id' => $article['sort_id'],
             'author' => $article['author'],
             'publish_status' => $article['publish_status'],
-//            'cover_ext' => $article['cover_ext'],
             'status' => 0
         ];
+
+        if (isset($article['cover_ext'])) $data['cover_ext'] = $article['cover_ext'];
 
         $data['author'] = '' == $article['author'] ? 'unknown' : $article['author'];
 

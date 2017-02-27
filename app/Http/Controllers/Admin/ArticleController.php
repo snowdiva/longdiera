@@ -128,6 +128,8 @@ class ArticleController extends AdminController
             $hasChange = true;
         }
 
+        if (null !== $file) $article['cover_ext'] = $file->getClientOriginalExtension();
+
         if ($artiRepo->editArticle($article)) $hasChange = true;
 
         if ($hasChange) {
