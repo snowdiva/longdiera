@@ -60,6 +60,7 @@ class ArticleController extends AdminController
     {
         $article = $request->all();
         if ('' == $article['title']) return $this->toError('文章名不能为空');
+        $article['sort_id'] = $request->input('sort_id', 0);
 
         $file = Input::file('cover');
         if (null !== $file) $article['cover_ext'] = $file->getClientOriginalExtension();
@@ -109,6 +110,7 @@ class ArticleController extends AdminController
     {
         $article = $request->all();
         if ($article['id'] <= 0) return $this->toError('缺少参数');
+        $article['sort_id'] = $request->input('sort_id', 0);
 
         $file = Input::file('cover');
 
