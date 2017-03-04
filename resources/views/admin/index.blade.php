@@ -61,7 +61,7 @@
                         <td>{!! $sort[$item->sort_id]['name'] !!}</td>
                         <td>{{ $item->chapter_count }}</td>
                         <td>{{ $item->size }}</td>
-                        <td>@if(1 == $item->publish_status) <span class="text-danger">已完结</span>@elseif(0 == $item->status) <span class="text-success">连载中</span>@elseif(2 == $item->status) <span class="label label-warning" data-rel="tooltip" title="{{ date('Y-m-d H:i:s', $item->audit_time) }}">定时发布</span>@else <span class="label label-default">已删除</span> @endif</td>
+                        <td>@if(1 == $item->publish_status) <span class="text-danger">已完结</span>@else <span class="text-success">连载中</span> @endif</td>
                         <td>@if(1 == $item->status) <span class="label label-success arrowed">已发布</span>@elseif(0 == $item->status) <span class="label label-danger">待审核</span>@elseif(2 == $item->status) <span class="label label-warning" data-rel="tooltip" title="{{ date('Y-m-d H:i:s', $item->audit_time) }}">定时发布</span>@else <span class="label label-default">已删除</span> @endif</td>
                         <td>{{ $item->auditor or '-' }}</td>
                         <td>
