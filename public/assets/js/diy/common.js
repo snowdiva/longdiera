@@ -71,6 +71,7 @@ $(function(){
     // 文章审核
     $("body").on("click", "[data-name=audit-btn]", function () {
         var url = $(this).attr("data-url")
+        var id = $(this).attr("data-id")
         var startTime = $(this).attr("data-defualt-time")
         var html = '<form action="javascript:;" class="form-horizontal" id="j_datetimepicker" role="form">\
                         <fieldset>\
@@ -80,6 +81,7 @@ $(function(){
                                     <input size="30" type="text" value="" name="audit_time" readonly="">\
                                     <span class="add-on"><i class="icon icon-remove"></i></span>\
                                     <span class="add-on"><i class="icon icon-calendar"></i></span>\
+                                    <input type="hidden" name="id" value="' + id + '">\
                                 </div>\
                             </div>\
                         </fieldset>\

@@ -12,7 +12,7 @@ class ArtiRepo
 
     public function getAll($where = [])
     {
-        $searchFiled = ['sort', 'title', 'author', 'auditor'];
+//        $searchFiled = ['sort', 'title', 'author', 'auditor'];
 
         if (!is_array($where) || empty($where)) {
             $list = DB::table($this->novelTable)

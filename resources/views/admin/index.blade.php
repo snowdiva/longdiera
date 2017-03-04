@@ -71,7 +71,7 @@
                                 </a>
 
                                 @if($item->status <= 0)
-                                <a class="blue" href="javascript:;" data-name="audit-btn" data-url="/webmaster/article/audit/?id={{ $item->id }}" data-default-time="{{ date('Y-m-d H:i') }}">
+                                <a class="blue" href="javascript:;" data-name="audit-btn" data-url="{{ url('/webmaster/article/audit') }}" data-id="{{ $item->id }}" data-default-time="{{ date('Y-m-d H:i') }}">
                                     <i class="icon icon-check-circle bigger-130"></i>审核
                                 </a>
                                 @endif
