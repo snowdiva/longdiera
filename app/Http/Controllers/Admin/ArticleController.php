@@ -141,7 +141,7 @@ class ArticleController extends AdminController
 
     public function articleAudit(Request $request, ArtiRepo $artiRepo)
     {
-        $id = $request->input('id', 0);
+        $id = $request->get('id', 0);
         if ($id <= 0) return $this->toJsonError('缺少参数');
         $audit_time = $request->input('audit_time', 0);
         if ($audit_time != 0) $audit_time .= ':00';// 处理秒
