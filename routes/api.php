@@ -2,12 +2,14 @@
 
 use Illuminate\Http\Request;
 
-//Route::get('/user', function (Request $request) {
-//    return $request->user();
-//})->middleware('auth:api');
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin_api'], function () {
+    // 登录及获取用户信息
+    Route::post('/login', 'UserController@getInfo');
 
-Route::group(['domain' => 'local.api.snowdiva.cn'], function () {
-    Route::get('/', 'HomeController@index');
+    // 用户列表操作
+    Route::group(['middleware' => 'adminApiToken'], function () {
+        Route::post('/users', 'UserController@getUserList');
+    });
 });
 
 

@@ -94,4 +94,16 @@ class UserController extends AdminController
 
         return view('admin.users', ['list' => $list]);
     }
+
+    public function getInfo(Request $request, UserRepo $userRepo)
+    {
+        // 首先从session中检索信息
+        if ($request->session()->exists('user')) return $request->session()->get('user');
+
+        // 验证登录信息
+        $username = $request->input('username', '');
+        $password = $request->input('password', 'md5');
+
+        return $this->toJson(['username' => $username, 'password' => $password, 'message' => 'success']);
+    }
 }

@@ -30,16 +30,8 @@ class GroupRepo
         $groupList = DB::table($this->groupTable)
             ->select('id', 'name')
             ->where('status', '>', 0)
-            ->get();
+            ->get()->toArray();
 
-        if (empty($groupList)) return [];
-
-        $returnList = [];
-
-        foreach ($groupList as $item) {
-            $returnList[$item->id] = $item->name;
-        }
-
-        return $returnList;
+        return $groupList;
     }
 }

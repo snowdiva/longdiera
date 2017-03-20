@@ -54,6 +54,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin.auth' => \App\Http\Middleware\AdministractorAuthentication::class,
         'csrf' => \App\Http\Middleware\VerifyCsrfToken::class,
-        'userlogin' => \App\Http\Middleware\UserLogin::class
+        'userlogin' => \App\Http\Middleware\UserLogin::class,
+        'enableCross' => \App\Http\Middleware\EnableCrossRequestMiddleware::class,
+        'adminApiToken' => \App\Http\Middleware\adminApiTokenMiddleware::class
     ];
 }

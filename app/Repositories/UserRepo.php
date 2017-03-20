@@ -27,7 +27,7 @@ class UserRepo
     public function checkUser($userName, $password = '')
     {
         $where = [['username', '=', $userName]];
-        if ('' !== $password) $where[] = ['password', '=', md5(md5($password))];
+        if ('' !== $password) $where[] = ['password', '=', md5($password)];
 
         $user = DB::table($this->userTable)
             ->where($where)
@@ -38,14 +38,11 @@ class UserRepo
 
     public function getData($where = [])
     {
-        if (empty($where)) {
-            $list = DB::table($this->userTable)
-                ->paginate(15);
-        } else {
-            $list = DB::table($this->userTable)
-                ->where($where)
-                ->paginate(15);
-        }
+        $list = DB::table($this->userTable)
+            ->select('id', 'username', 'email', 'phone' ,'group_id' ,'alias' ,'create_at' ,'gender' ,'status')
+            ->where($where)
+            ->paginate(15)
+            ->toArray();
 
         return $list;
     }

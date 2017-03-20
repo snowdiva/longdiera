@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Session;
 
 class UserLogin
 {
-    protected $loginUrl = 'http://m.shucong.com/login';
+    protected $loginUrl = 'http://www.longdiera.com/login';
 
     public function handle($request, Closure $next)
     {
