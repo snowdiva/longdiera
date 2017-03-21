@@ -42,7 +42,7 @@ class CommonController extends Controller
      * @param $data 返回数据
      * @return mixed
      */
-    public function toJson($data)
+    public function returnJson($data)
     {
         return response()->json([
             'error' => 0,
