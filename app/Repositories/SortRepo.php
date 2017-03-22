@@ -60,6 +60,20 @@ class SortRepo
         }
     }
 
+    public function getSortOptions ($sortId = -1)
+    {
+        $where = [['status', '=', 1]];
+        if ($sortId !== -1) $where[] = ['sort_id', '=', $sortId];
+
+        $sortList = DB::table($this->sortTable)
+            ->where($where)
+            ->orderBy('hot_is', 'DESC')
+            ->get()
+            ->toArray();
+
+        return $sortList;
+    }
+
     /**
      * 检查重名
      * @param $name

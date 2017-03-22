@@ -29,6 +29,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin_api'], function () {
         Route::post('/sort/new', 'SortController@newSort');
         Route::post('/sort/edit', 'SortController@editSort');
         Route::post('/sort/delete', 'SortController@deleteSort');
+        // 小说管理管理
+        Route::post('/novel', 'NovelController@getNovelList');
+        Route::post('/novel/new', 'NovelController@newNovel');
+        Route::post('/novel/edit', 'NovelController@editNovel');
+        Route::post('/novel/audit', 'NovelController@auditNovel');
+        Route::post('/novel/delete', 'NovelController@deleteNovel');
     });
 });
 
