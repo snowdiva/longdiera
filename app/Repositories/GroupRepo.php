@@ -12,11 +12,12 @@ class GroupRepo
      * 获取所有分组列表,带有分页类
      * @return mixed
      */
-    public function getAll()
+    public function getAll($where = [])
     {
         $groupList = DB::table($this->groupTable)
-            ->where('status', '>', 0)
-            ->paginate(15);
+            ->where($where)
+            ->paginate(config('admin.page_number'))
+            ->toArray();
 
         return $groupList;
     }

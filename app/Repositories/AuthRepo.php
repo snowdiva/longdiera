@@ -9,7 +9,8 @@ class AuthRepo
 {
     protected $authTable = 'authority';
     protected $groupTable = 'group';
-    protected $groupAuthTable = 'group_aruthority';
+    protected $userTable = 'user';
+    protected $groupAuthTable = 'group_authority';
 
     public function getAll()
     {
@@ -20,6 +21,102 @@ class AuthRepo
 
         return $adminMenu;
     }
+
+    //-----------api接口
+    public function getData ($where = [], $userGroupId = -1)
+    {
+        if ($userGroupId !== -1) {
+            // 非超级管理员只能分配自己已具有的权限
+            $userAuthId = DB::table($this->groupAuthTable)
+                ->select('id')
+                ->where('group_id', '=', $userGroupId)
+                ->get()
+                ->toArray();
+
+            $userAuthId = implode(',', $userAuthId);
+            $where[] = ['id', 'in', '('.$userAuthId.')'];
+        }
+
+        $authList = DB::table($this->authTable)
+            ->where($where)
+            ->orderBy('create_at', 'DESC')
+            ->paginate(config('admin.page_number'))
+            ->toArray();
+
+        return $authList;
+    }
+
+    public function insertData ($data)
+    {
+        $id = DB::table($this->authTable)
+            ->insertGetId($data);
+
+        return $id;
+    }
+
+    public function updatedata ($data, $id)
+    {
+        $effect = DB::table($this->authTable)
+            ->where('id', '=', $id)
+            ->update($data);
+
+        if ($effect > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getOptions ($pid = -1)
+    {
+        $where[] = ['status', '=', 1];
+        $where[] = ['type', '<', 2];
+        if ($pid !== -1) $where[] = ['pid', '=', $pid];
+
+        $opsionList = DB::table($this->authTable)
+            ->select('id', 'name', 'pid')
+            ->where($where)
+            ->orderBy('pid')
+            ->get()
+            ->toArray();
+
+        return $opsionList;
+    }
+
+    public function checkAuthById ($id)
+    {
+        return DB::table($this->authTable)
+            ->whereId($id)
+            ->first();
+    }
+
+    public function checkAuthUsed ($id)
+    {
+        return DB::table($this->groupAuthTable)
+            ->where('authority_id', '=', $id)
+            ->first();
+    }
+
+    public function deleteData ($id, $trueDelete = false)
+    {
+        if ($trueDelete) {
+            $result = DB::table($this->authTable)
+                ->where('id', $id)
+                ->delete();
+        } else {
+            $result = DB::table($this->authTable)
+                ->where('id', $id)
+                ->update(['status' => 2]);
+        }
+
+        if ($result > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //----------api接口代码段结束
 
     public function getList($userId = 0)
     {
@@ -67,20 +164,24 @@ class AuthRepo
 
     /**
      * 用于后台权限管理的列表
-     * @param $userId
-     * @param bool $isAdmin 程序控制是否获取全部列表
+     * @param $userId 如果填写-1,则表示所有权限的管理员
      * @return mixed
      */
-    public function getListMenu($userId, $isAdmin = false)
+    public function getAuthList ($userId)
     {
-        if ($isAdmin) {
+        if ($userId === -1) {
             $list = DB::table($this->authTable)
-                ->paginate(15);
+                ->where('status', '=', 1)
+                ->get()
+                ->toArray();
         } else {
             $list = DB::table($this->groupAuthTable)
                 ->leftJoin($this->authTable, $this->groupAuthTable . '.authority_id', '=', $this->authTable . '.id')
-                ->where($this->groupAuthTable . '.user_id', $userId)
-                ->paginate(15);
+                ->rightJoin($this->userTable, $this->groupAuthTable . '.group_id', '=', $this->userTable . '.id')
+                ->where($this->userTable . '.id', $userId)
+                ->where($this->authTable . '.status', '=', 1)
+                ->get()
+                ->toArray();
         }
 
         return $list;
