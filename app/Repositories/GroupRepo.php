@@ -35,4 +35,43 @@ class GroupRepo
 
         return $groupList;
     }
+
+    public function insertData ($data)
+    {
+        return DB::table($this->groupTable)
+            ->insertGetId($data);
+    }
+
+    public function updateData ($data, $id)
+    {
+        return DB::table($this->groupTable)
+            ->whereId($id)
+            ->update($data);
+    }
+
+    public function checkGroupById ($groupId)
+    {
+        return DB::table($this->groupTable)
+            ->whereId($groupId)
+            ->first();
+    }
+
+    public function deleteData ($id, $trueDelete = false)
+    {
+        if ($trueDelete) {
+            $result = DB::table($this->groupTable)
+                ->where('id', $id)
+                ->delete();
+        } else {
+            $result = DB::table($this->groupTable)
+                ->where('id', $id)
+                ->update(['status' => 2]);
+        }
+
+        if ($result > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

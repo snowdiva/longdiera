@@ -116,6 +116,82 @@ class AuthRepo
         }
     }
 
+    public function getAuthList ($group_id = -1)
+    {
+        $fields = ['id', 'name', 'pid', 'explain'];
+        if ($group_id === -1) {
+            $list = DB::table($this->authTable)
+                ->select($fields)
+                ->whereStatus(1)
+                ->orderBy('pid')
+                ->get()
+                ->toArray();
+        } else {
+            $promissionAuth = DB::table($this->groupAuthTable)
+                ->select('authority_id')
+                ->where('group_id', '=', $group_id)
+                ->get();
+
+            $whereArray = [];
+            foreach ($promissionAuth as $item) {
+                $whereArray[] = $item->authority_id;
+            }
+
+            $list = DB::table($this->authTable)
+                ->select($fields)
+                ->whereStatus(1)
+                ->whereIn($whereArray)
+                ->orderBy('pid')
+                ->get()
+                ->toArray();
+        }
+
+        return $list;
+    }
+
+    public function getGroupAuthList ($groupId)
+    {
+        $list = DB::table($this->groupAuthTable)
+            ->select('authority_id')
+            ->where('group_id', '=', $groupId)
+            ->get();
+
+        $authList = [];
+        foreach ($list as $item) {
+            $authList[] = $item->authority_id;
+        }
+
+        return $authList;
+    }
+
+    public function updateGroupAuth (Array $authList, $groupId)
+    {
+        // 如果存在就先删除原纪录
+        if (DB::table($this->groupAuthTable)->where('group_id', '=', $groupId)->first()) {
+            DB::table($this->groupAuthTable)
+                ->where('group_id', $groupId)
+                ->delete();
+        }
+
+        // 如果是删除权限则直接返回成功
+        if (empty($authList)) return true;
+
+        // 重组新的权限记录
+        $updateData = [];
+        foreach ($authList as $key => $value) {
+            $updateData[$key]['group_id'] = $groupId;
+            $updateData[$key]['authority_id'] = $value;
+        }
+        $result = DB::table($this->groupAuthTable)
+            ->insert($updateData);
+
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //----------api接口代码段结束
 
     public function getList($userId = 0)
@@ -167,25 +243,25 @@ class AuthRepo
      * @param $userId 如果填写-1,则表示所有权限的管理员
      * @return mixed
      */
-    public function getAuthList ($userId)
-    {
-        if ($userId === -1) {
-            $list = DB::table($this->authTable)
-                ->where('status', '=', 1)
-                ->get()
-                ->toArray();
-        } else {
-            $list = DB::table($this->groupAuthTable)
-                ->leftJoin($this->authTable, $this->groupAuthTable . '.authority_id', '=', $this->authTable . '.id')
-                ->rightJoin($this->userTable, $this->groupAuthTable . '.group_id', '=', $this->userTable . '.id')
-                ->where($this->userTable . '.id', $userId)
-                ->where($this->authTable . '.status', '=', 1)
-                ->get()
-                ->toArray();
-        }
-
-        return $list;
-    }
+//    public function getAuthList ($userId)
+//    {
+//        if ($userId === -1) {
+//            $list = DB::table($this->authTable)
+//                ->where('status', '=', 1)
+//                ->get()
+//                ->toArray();
+//        } else {
+//            $list = DB::table($this->groupAuthTable)
+//                ->leftJoin($this->authTable, $this->groupAuthTable . '.authority_id', '=', $this->authTable . '.id')
+//                ->rightJoin($this->userTable, $this->groupAuthTable . '.group_id', '=', $this->userTable . '.id')
+//                ->where($this->userTable . '.id', $userId)
+//                ->where($this->authTable . '.status', '=', 1)
+//                ->get()
+//                ->toArray();
+//        }
+//
+//        return $list;
+//    }
 
     public function addAuth($name, $alias, $url, $description, $type, $pid)
     {

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Repositories\AuthRepo;
 use App\Repositories\GroupRepo;
 use App\Repositories\UserRepo;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends CommonController
 {
@@ -47,89 +49,96 @@ class GroupController extends CommonController
 
         // 获取相关数据
         $list = $groupRepo->getAll($where);
-        $list['auth_list'] = $authRepo->getAuthList(-1);
+        // 针对前段Transfer插件修改接口返回数据
+        $authListArray = $authRepo->getAuthList();
+        foreach ($authListArray as $key => $value) {
+            $list['auth_list'][$key]['key'] = $value->id;
+            $list['auth_list'][$key]['id'] = $value->id;
+            $list['auth_list'][$key]['name'] = $value->name;
+            $list['auth_list'][$key]['label'] = $value->name;
+            $list['auth_list'][$key]['pid'] = $value->pid;
+            $list['auth_list'][$key]['description'] = $value->explain;
+            $list['auth_list'][$key]['pid'] = $value->pid;
+            $list['auth_list'][$key]['disabled'] = false;
+        }
 
         return $this->returnJson($list);
     }
 
-    public function newGroup (Request $request, GroupRepo $groupRepo)
+    public function newGroup (Request $request, GroupRepo $groupRepo, AuthRepo $authRepo)
     {
         // 初始默认值
-//        $setData = [
-//            'username' => $request->input('username', ''),
-//            'password' => $request->input('password', ''),
-//            'email' => $request->input('email', ''),
-//            'phone' => $request->input('phone', ''),
-//            'alias' => $request->input('alias', ''),
-//            'gender' => $request->input('gender', 0),
-//            'group_id' => $request->input('group_id', 0),
-//            'create_at' => time(),
-//            'status' => $request->input('status', 1)
-//        ];
-//        if ($setData['username'] === '') return $this->error('必须提交用户名');
-//        // 登录名非重检查
-//        if ($userRepo->checkUser($setData['username'])) return $this->error('登录名已存在,或该用户未彻底删除');
-//        if ($setData['password'] === '') $setData['password'] = md5($setData['username']);
-//        $setData['password'] = md5($setData['password']);
-//        if ($setData['alias'] === '') $setData['alias'] = $setData['username'];
-//
-//        if ($id = $userRepo->insertData($setData)) {
-//            $setData['id'] = $id;
-//            return $this->returnJson($setData);
-//        } else {
-//            return $this->error('操作失败,请联系管理员大大');
-//        }
+        $setData = [
+            'name' => $request->input('name', ''),
+            'explain' => $request->input('explain', ''),
+            'status' => $request->input('status', 1),
+            'amount' => 0,
+            'create_at' => time()
+        ];
+        $groupNewAuthList = $request->input('auth_list', []);
+        if ($setData['name'] === '') return $this->error('用户组名称为不能为空');
+
+        $newId = $groupRepo->insertData($setData);
+        if (!$newId) return $this->error('添加用户组失败');
+        $setGroupAuthResult = $authRepo->updateGroupAuth($groupNewAuthList, $newId);
+
+        if ($setGroupAuthResult) {
+            $setData['id'] = $newId;
+            return $this->returnJson($setData);
+        } else {
+            return $this->error('数据操作失败或者完全没有修改');
+        }
     }
 
-    public function editGroup (Request $request, GroupRepo $groupRepo)
+    public function editGroup (Request $request, GroupRepo $groupRepo, AuthRepo $authRepo)
     {
         // 参数验证
-//        $id = $request->input('id', 0);
-//        if ($id === 0) return $this->error('缺少用户UID');
-//        $userInfo = $userRepo->checkUserById($id);
-//        if (!$userInfo) return $this->error('提交用户不存在');
-//
-//        // 初始默认值
-//        $setData = [
-//            'password' => $request->input('password', ''),
-//            'email' => $request->input('email', ''),
-//            'phone' => $request->input('phone', ''),
-//            'alias' => $request->input('alias', ''),
-//            'gender' => $request->input('gender', 0),
-//            'group_id' => $request->input('group_id', 0),
-//            'status' => $request->input('status', 1)
-//        ];
-//        if ($setData['password'] === '') {
-//            unset($setData['password']);
-//        } else {
-//            $setData['password'] = md5($setData['password']);
-//        }
-//        if ($setData['alias'] === '') $setData['alias'] = $userInfo->username;
-//
-//        if ($userRepo->updateData($setData, $id)) {
-//            $setData['id'] = $id;
-//            $setData['username'] = $userInfo->username;
-//            $setData['create_at'] = $userInfo->group_id;
-//            return $this->returnJson($setData);
-//        } else {
-//            return $this->error('操作失败,请联系管理员大大');
-//        }
+        $id = $request->input('id', 0);
+        if ($id === 0) return $this->error('缺少用户组GID');
+        $group = $groupRepo->checkGroupById($id);
+        if (!$group) return $this->error('提交用户组不存在');
+
+        // 判断是否为返回详情
+        $getView = $request->input('get', '');
+        if ($getView === 'one') {
+            $group->auth_list = $authRepo->getGroupAuthList($id);
+            return $this->returnJson($group);
+        }
+
+        // 初始默认值
+        $setData = [
+            'name' => $request->input('name', ''),
+            'explain' => $request->input('explain', ''),
+            'status' => $request->input('status', 1)
+        ];
+        $groupNewAuthList = $request->input('auth_list', []);
+        if ($setData['name'] === '') return $this->error('用户组名称为不能为空');
+
+        $updateResult = $groupRepo->updateData($setData, $id);
+        $setGroupAuthResult = $authRepo->updateGroupAuth($groupNewAuthList, $id);
+
+        if ($updateResult > 0 || $setGroupAuthResult) {
+            $setData['id'] = $id;
+            return $this->returnJson($setData);
+        } else {
+            return $this->error('数据操作失败或者完全没有修改');
+        }
     }
 
     public function deleteGroup (Request $request, GroupRepo $groupRepo)
     {
         // 参数验证
-//        $id = $request->input('id', 0);
-//        if ($id === 0) return $this->error('缺少用户UID');
-//        $userInfo = $userRepo->checkUserById($id);
-//        if (!$userInfo) return $this->error('提交用户不存在');
-//
-//        if ($userInfo->status === 2) {
-//            if ($userRepo->deleteData($id, 1)) return $this->success('已经彻底删除');
-//        } else {
-//            if ($result = $userRepo->deleteData($id)) return $this->success('已删除');
-//        }
-//
-//        return $this->error('没有任何改变');
+        $id = $request->input('id', 0);
+        if ($id === 0) return $this->error('缺少操作组GID');
+        $gourp = $groupRepo->checkGroupById($id);
+        if (!$gourp) return $this->error('提交用户组不存在');
+
+        if ($gourp->status === 2) {
+            if ($groupRepo->deleteData($id, 1)) return $this->success('已经彻底删除');
+        } else {
+            if ($result = $groupRepo->deleteData($id)) return $this->success('已删除');
+        }
+
+        return $this->error('没有任何改变');
     }
 }
