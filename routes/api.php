@@ -24,6 +24,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin_api'], function () {
         Route::post('/auth/new', 'AuthorityController@newAuth');
         Route::post('/auth/edit', 'AuthorityController@editAuth');
         Route::post('/auth/delete', 'AuthorityController@deleteAuth');
+        // 分类管理
+        Route::post('/sort', 'SortController@getSortList');
+        Route::post('/sort/new', 'SortController@newSort');
+        Route::post('/sort/edit', 'SortController@editSort');
+        Route::post('/sort/delete', 'SortController@deleteSort');
     });
 });
 

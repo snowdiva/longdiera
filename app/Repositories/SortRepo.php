@@ -7,15 +7,111 @@ use Illuminate\Support\Facades\DB;
 class SortRepo
 {
     protected $sortTable = 'sort';
+    protected $novelTable = 'novel';
 
-    public function getAll()
+    // -----Api方法
+    public function getData($where = [])
     {
         $list = DB::table($this->sortTable)
-            ->where('status', '>', 0)
-            ->paginate(15);
+            ->where($where)
+            ->paginate(config('admin.page_number'))
+            ->toArray();
 
         return $list;
     }
+
+    public function insertData(Array $data)
+    {
+        $id = DB::table($this->sortTable)
+            ->insertGetId($data);
+
+        return $id;
+    }
+
+    public function updateData(Array $data, $id)
+    {
+        $result = DB::table($this->sortTable)
+            ->whereId($id)
+            ->update($data);
+
+        if ($result > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function deleteData ($id, $trueDelete = false)
+    {
+        if ($trueDelete) {
+            $result = DB::table($this->sortTable)
+                ->where('id', $id)
+                ->delete();
+        } else {
+            $result = DB::table($this->sortTable)
+                ->where('id', $id)
+                ->update(['status' => 2]);
+        }
+
+        if ($result > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 检查重名
+     * @param $name
+     * @param $shortName
+     * @param $chineseName
+     * @param $id
+     * @return bool
+     */
+    public function checkRepitition ($name, $shortName, $chineseName, $id = -1)
+    {
+        $where = [
+            ['name', '=', $name],
+            ['short_name', '=', $shortName],
+            ['chinese_name', '=', $chineseName]
+        ];
+        if ($id !== -1) $where[] = ['id', '<>', $id];
+        $hasSort = DB::table($this->sortTable)
+            ->where($where)
+            ->first();
+
+        if ($hasSort) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 检查分类是否存在
+     * @param $id
+     * @return mixed
+     */
+    public function checkSortById ($id)
+    {
+        return DB::table($this->sortTable)
+            ->whereId($id)
+            ->first();
+    }
+
+    /**
+     * 检查分类是否已分配小说
+     * @param $id
+     * @return mixed
+     */
+    public function checkSortUsed ($id)
+    {
+        return DB::table($this->novelTable)
+            ->where('sort_id', $id)
+            ->first();
+    }
+
+    // -----Api方法结束
 
     public function getOne($sortId)
     {
