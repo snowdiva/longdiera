@@ -1,0 +1,2 @@
+webpackJsonp([19,22],{20:function(e,r,t){var n=t(6)(null,t(295),null,null);e.exports=n.exports},295:function(e,r){e.exports={render:function(){var e=this,r=e.$createElement,t=e._self._c||r;return t("div",{attrs:{id:"novel-details"}},[t("div",{staticClass:"breadcrumb-box"},[t("Breadcrumb",[t("Breadcrumb-item",{attrs:{href:"/home"}},[e._v(" 首页 ")]),e._v(" "),t("Breadcrumb-item",[e._v(" 章节更新管理 ")])],1)],1)])},staticRenderFns:[]}}});
+//# sourceMappingURL=19.0866ec94e01e0c37481d.js.map
