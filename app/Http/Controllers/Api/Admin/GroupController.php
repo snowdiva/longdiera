@@ -102,8 +102,8 @@ class GroupController extends CommonController
         $getView = $request->get('get');
         dd($getView);
         if ($getView === 'one') {
-            $groupView->auth_list = $authRepo->getGroupAuthList($id);
-            return $this->returnJson($groupView);
+            $group->auth_list = $authRepo->getGroupAuthList($id);
+            return $this->returnJson($group);
         }
 
         // 初始默认值
