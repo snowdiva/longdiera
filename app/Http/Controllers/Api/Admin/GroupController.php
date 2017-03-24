@@ -99,7 +99,7 @@ class GroupController extends CommonController
         if (!$group) return $this->error('提交用户组不存在');
 
         // 判断是否为返回详情
-        $getView = $request->get('get');
+        $getView = $request->all('get');
         dd($getView);
         if ($getView === 'one') {
             $group->auth_list = $authRepo->getGroupAuthList($id);
