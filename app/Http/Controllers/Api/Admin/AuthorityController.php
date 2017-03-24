@@ -44,9 +44,9 @@ class AuthorityController extends CommonController
             'name' => $request->input('name', ''),
             'explain' => $request->input('explain', ''),
             'authority' => $request->input('authority', ''),
-            'type' => $request->input('type', 0),
-            'pid' => $request->input('pid', 0),
-            'status' => $request->input('status', 1),
+            'type' => intval($request->input('type', 0)),
+            'pid' => intval($request->input('pid', 0)),
+            'status' => intval($request->input('status', 1)),
             'create_at' => time()
         ];
         if ($data['name'] === '') return $this->error('名称不能为空');
@@ -71,9 +71,9 @@ class AuthorityController extends CommonController
             'name' => $request->input('name', ''),
             'explain' => $request->input('explain', ''),
             'authority' => $request->input('authority', ''),
-            'type' => $request->input('type', 0),
-            'pid' => $request->input('pid', 0),
-            'status' => $request->input('status', 1)
+            'type' => intval($request->input('type', 0)),
+            'pid' => intval($request->input('pid', 0)),
+            'status' => intval($request->input('status', 1))
         ];
         if ($data['name'] === '') return $this->error('名称不能为空');
         if ($data['pid'] === 0 && $data['type'] !== 0) return $this->error('模块权限的类型不能为菜单或者节点');
