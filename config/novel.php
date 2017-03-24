@@ -18,4 +18,10 @@ return [
     'news' => [
         'type' => ['未知', '本站原创', '引用文章', '采集文章']
     ],
+    // 小说封面地址
+    'cover_temp_path' => 'storage/cover_temp/',
+    'cover_path' => 'storage/cover/',
+    // 封面存储大小
+    'cover_weight' => 300,
+    'cover_height' => 400,
 ];

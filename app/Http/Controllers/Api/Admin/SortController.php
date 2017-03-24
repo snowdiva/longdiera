@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class SortController extends CommonController
 {
+    /**
+     * 后台管理所有分类获取列表
+     * @param Request $request
+     * @param SortRepo $sortRepo
+     * @return mixed
+     */
     public function getSortList (Request $request, SortRepo $sortRepo)
     {
         // 处理查询条件
@@ -25,6 +31,12 @@ class SortController extends CommonController
         return $this->returnJson($list);
     }
 
+    /**
+     * 后台管理:添加一个分类
+     * @param Request $request
+     * @param SortRepo $sortRepo
+     * @return mixed
+     */
     public function newSort (Request $request, SortRepo $sortRepo)
     {
         $data = [
@@ -49,6 +61,12 @@ class SortController extends CommonController
         }
     }
 
+    /**
+     * 后台管理:编辑一个分类
+     * @param Request $request
+     * @param SortRepo $sortRepo
+     * @return mixed
+     */
     public function editSort (Request $request, SortRepo $sortRepo)
     {
         $id = $request->input('id', 0);
@@ -74,6 +92,13 @@ class SortController extends CommonController
         }
     }
 
+    /**
+     * 放入回收站或直接删除一个分类
+     * @param Request $request
+     * @param SortRepo $sortRepo
+     * @param ArtiRepo $artiRepo
+     * @return mixed
+     */
     public function deleteSort (Request $request, SortRepo $sortRepo, ArtiRepo $artiRepo)
     {
         // 参数验证
@@ -90,5 +115,18 @@ class SortController extends CommonController
         }
 
         return $this->error('没有任何改变');
+    }
+
+    /**
+     * 其他模块调用分类列表供选择使用
+     * @param Request $request
+     * @param SortRepo $sortRepo
+     */
+    public function getSortOptions (Request $request, SortRepo $sortRepo)
+    {
+        $sort_id = $request->input('id', -1);
+        $list = $sortRepo->getSortOptions($sort_id);
+
+        return $this->returnJson($list);
     }
 }

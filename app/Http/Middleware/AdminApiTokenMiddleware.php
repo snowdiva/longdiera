@@ -18,7 +18,11 @@ class AdminApiTokenMiddleware
         if ($userInfo === null) return response()->json(['error' => 401, 'message' => '登录已失效,请重新登录']);
 
         // 用户访问权限认证
-        // TODO::等待丰富
+        // TODO::等待丰富,暂时使用数据库表实时查询
+        if ($userInfo->group_id !== config('admin.admin_group_id')) {
+            $authRepo = new \App\Repositories\AuthRepo();
+            if (!$authRepo->checkAuth($userInfo->group_id, $request->route()->uri())) return response()->json(['error' => 403, 'message' => '无权访问']);
+        }
 
         // 刷新令牌时间
         cache([$accessToken => $userInfo], config('admin.access_token_time'));

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Repositories\AuthRepo;
 use App\Repositories\GroupRepo;
 use App\Repositories\UserRepo;
 use Illuminate\Foundation\Auth\User;
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
 
 class UserController extends CommonController
 {
-    public function getInfo (Request $request, UserRepo $userRepo)
+    public function getInfo (Request $request, UserRepo $userRepo, AuthRepo $authRepo)
     {
         // 首先从缓存中检索信息
         if ($userInfo = cache('user')) return $userInfo;

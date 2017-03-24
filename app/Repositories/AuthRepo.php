@@ -192,6 +192,21 @@ class AuthRepo
         }
     }
 
+    /**
+     * 检查用户组是否拥有某个权限
+     * @param $groupId
+     * @param $auth_name
+     * @return mixed
+     */
+    public function checkAuth ($groupId, $auth_name)
+    {
+        return DB::table($this->groupAuthTable)
+            ->leftJoin($this->authTable, $this->authTable . '.id', '=', $this->groupAuthTable . '.authority_id')
+            ->where($this->groupAuthTable . '.group_id', '=', $groupId)
+            ->where($this->authTable . '.authority', '=', $auth_name)
+            ->first();
+    }
+
     //----------api接口代码段结束
 
     public function getList($userId = 0)

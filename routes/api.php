@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin_api'], function () {
     // 登录及获取用户信息
     Route::post('/login', 'UserController@getInfo');
@@ -29,12 +27,20 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin_api'], function () {
         Route::post('/sort/new', 'SortController@newSort');
         Route::post('/sort/edit', 'SortController@editSort');
         Route::post('/sort/delete', 'SortController@deleteSort');
+        Route::post('/sort/options', 'SortController@getSortOptions');
         // 小说管理管理
         Route::post('/novel', 'NovelController@getNovelList');
         Route::post('/novel/new', 'NovelController@newNovel');
         Route::post('/novel/edit', 'NovelController@editNovel');
         Route::post('/novel/audit', 'NovelController@auditNovel');
         Route::post('/novel/delete', 'NovelController@deleteNovel');
+        Route::post('/novel/cover', 'NovelController@uploadNovelCover');
+        // 章节管理管理
+        Route::post('/chapter', 'ChapterController@getChapterList');
+        Route::post('/chapter/new', 'ChapterController@newChapter');
+        Route::post('/chapter/edit', 'ChapterController@editChapter');
+        Route::post('/chapter/audit', 'ChapterController@auditChapter');
+        Route::post('/chapter/delete', 'ChapterController@deleteChapter');
     });
 });
 

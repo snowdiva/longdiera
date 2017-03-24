@@ -164,6 +164,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Stevenyangecho\UEditor\UEditorServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -228,6 +229,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Ip' => Zhuzhichao\IpLocationZh\Ip::class,
         'BrowserDetect' => 'hisorange\BrowserDetect\Facade\Parser',
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

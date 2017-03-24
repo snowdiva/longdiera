@@ -66,6 +66,7 @@ class SortRepo
         if ($sortId !== -1) $where[] = ['sort_id', '=', $sortId];
 
         $sortList = DB::table($this->sortTable)
+            ->select('id', 'name', 'short_name', 'chinese_name', 'sort_id', 'hot_is')
             ->where($where)
             ->orderBy('hot_is', 'DESC')
             ->get()
