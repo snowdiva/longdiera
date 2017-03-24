@@ -153,7 +153,7 @@ class NovelController extends CommonController
 
         $newName = md5(time()) . '.' . $coverFile->getClientOriginalExtension();
         try {
-            $coverFile->move(public_path(config('cover.cover_temp_path')), $newName);
+            $coverFile->move(public_path(config('novel.cover_temp_path')), $newName);
         } catch (FileException $e) {
             return $this->error($e->getMessage());
         }

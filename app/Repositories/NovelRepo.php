@@ -118,6 +118,7 @@ class NovelRepo
     /**
      * 删除小说中对应的章节统计数据(count和size)
      * @param $novelId
+     * @param $chapterId
      * @param $chapterSize
      */
     public function removeChapterInNovel ($novelId, $chapterSize)
