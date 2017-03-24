@@ -56,6 +56,6 @@ class Kernel extends HttpKernel
         'csrf' => \App\Http\Middleware\VerifyCsrfToken::class,
         'userlogin' => \App\Http\Middleware\UserLogin::class,
         'enableCross' => \App\Http\Middleware\EnableCrossRequestMiddleware::class,
-        'adminApiToken' => \App\Http\Middleware\adminApiTokenMiddleware::class
+        'adminApiToken' => \App\Http\Middleware\AdminApiTokenMiddleware::class
     ];
 }
